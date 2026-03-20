@@ -1,3 +1,6 @@
+#include <bits/stdc++.h>
+using namespace std;
+
 template<typename T>
 struct SegTree {
     int n;
@@ -13,10 +16,23 @@ struct SegTree {
         return a + b;
     }
 
+    // Build interno (Recursivo)
+    void build(int node, int l, int r, const vector<T>& arr) {
+        if (l == r) {
+            tree[node] = arr[l];
+            return;
+        }
+        int mid = (l + r) / 2;
+        build(2 * node, l, mid, arr);
+        build(2 * node + 1, mid + 1, r, arr);
+        
+        tree[node] = combina(tree[2 * node], tree[2 * node + 1]);
+    }
+
     // Update interno (Recursivo)
     void update(int node, int l, int r, int pos, T val) {
         if (l == r) {
-            tree[node] += val; // Altere para '=' se for substituição em vez de soma
+            tree[node] += val; // Altere para '=' se for substituição
             return;
         }
         int mid = (l + r) / 2;
@@ -37,6 +53,12 @@ struct SegTree {
     }
 
     // --- FUNÇÕES PARA USAR NA MAIN ---
+    
+    // Chama o build passando o array inicial
+    void build(const vector<T>& arr) {
+        build(1, 0, n - 1, arr);
+    }
+
     void update(int pos, T val) { 
         update(1, 0, n - 1, pos, val); 
     }
@@ -47,7 +69,10 @@ struct SegTree {
 };
 
 /* COMO USAR NA MAIN:
- * SegTree<int> st(10);
- * st.update(3, 5);      // Adiciona 5 na posição 3
- * int ans = st.query(1, 5); // Soma do intervalo [1, 5]
+ * vector<int> arr = {1, 3, 5, 7, 9, 11};
+ * int n = arr.size();
+ * * SegTree<int> st(n);
+ * st.build(arr);            // Constrói a árvore em O(N) com o array base
+ * * int ans = st.query(1, 3); // Soma do intervalo [1, 3] (3 + 5 + 7 = 15)
+ * st.update(2, 5);          // Adiciona 5 na posição 2 (o '5' vira '10')
  */

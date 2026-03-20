@@ -1,3 +1,6 @@
+#include <bits/stdc++.h>
+using namespace std;
+
 template <class T> struct SegTreeIterative {
   int n;
   vector<T> seg;
