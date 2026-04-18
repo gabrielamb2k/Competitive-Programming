@@ -1,0 +1,113 @@
+set nocompatible
+    filetype plugin indent on
+    syntax on
+
+    set tabstop=2 shiftwidth=4 expandtab
+    set smartindent autoindent
+
+    set number relativenumber
+    set colorcolumn=0
+    set laststatus=2 ruler showcmd
+    set scrolloff=5
+
+    set incsearch hlsearch ignorecase smartcase
+
+    set clipboard=unnamedplus
+    set backspace=indent,eol,start
+    set wildmenu wildmode=longest:full,full
+    set mouse=a
+    set splitright splitbelow
+    set noswapfile
+    set encoding=utf-8
+    set hidden
+
+    let mapleader = " "
+
+    inoremap jk <Esc>
+    nnoremap <leader>w :w<CR>
+    nnoremap <leader>h :nohlsearch<CR>
+    nnoremap <C-h> <C-w>h
+    nnoremap <C-j> <C-w>j
+    nnoremap <C-k> <C-w>k
+    nnoremap <C-l> <C-w>l
+
+    nnoremap <leader>t :term<CR>
+    nnoremap <leader>i :vsp input.txt<CR>
+    nnoremap <leader>o :e output.txt<CR>
+    nnoremap <F9> :w<CR>:!g++ -std=c++17 -O2 -Wall -o %:r %<CR>
+    nnoremap <F5> :w<CR>:!g++ -std=c++17 -O2 -o %:r % && ./%:r<CR>
+    nnoremap <F6> :w<CR>:!g++ -std=c++17 -O2 -o %:r % && ./%:r < input.txt<CR>
+    nnoremap <leader>cp :-1read ~/.vim/templates/cp.cpp<CR>
+
+    autocmd FileType cpp setlocal commentstring=//\ %s
+
+  " --- Formatador ---
+  autocmd FileType cpp setlocal formatprg=clang-format\ --style=Google
+  nnoremap <leader>f :%!clang-format --style=Google<CR>
+  vnoremap <leader>f :!clang-format --style=Google<CR>
+
+  " --- Tema minimalista ---
+  set background=dark
+  set t_Co=256
+
+  highlight clear
+  highlight Normal       ctermbg=NONE    ctermfg=250
+  highlight Comment      ctermfg=240     cterm=italic
+  highlight LineNr       ctermfg=238
+  highlight CursorLineNr ctermfg=244     cterm=bold
+  highlight CursorLine   ctermbg=234     cterm=none
+  highlight ColorColumn  ctermbg=234
+  highlight StatusLine   ctermbg=234     ctermfg=242  cterm=none
+  highlight StatusLineNC ctermbg=233     ctermfg=238  cterm=none
+  highlight Visual       ctermbg=236
+  highlight Search       ctermbg=236     ctermfg=215  cterm=none
+  highlight IncSearch    ctermbg=215     ctermfg=234  cterm=none
+  highlight MatchParen   ctermbg=236     ctermfg=215  cterm=bold
+
+  " Sintaxe C++
+  highlight Statement    ctermfg=110     cterm=none
+  highlight Type         ctermfg=150     cterm=none
+  highlight String       ctermfg=180
+  highlight Number       ctermfg=173
+  highlight Constant     ctermfg=173
+  highlight PreProc      ctermfg=240
+  highlight Special      ctermfg=246
+  highlight Identifier   ctermfg=250     cterm=none
+  highlight Function     ctermfg=110     cterm=none
+
+  " Sem fundo nos números — mais limpo
+  highlight SignColumn   ctermbg=NONE
+
+
+  highlight Comment      ctermfg=71      cterm=italic
+
+  " Strings — laranja VS Code
+  highlight String       ctermfg=173
+  highlight Character    ctermfg=173
+
+  " Números — verde claro
+  highlight Number       ctermfg=150     cterm=none
+  highlight Constant     ctermfg=150     cterm=none
+  highlight Boolean      ctermfg=86      cterm=none
+
+  " Keywords — azul VS Code
+  highlight Statement    ctermfg=68      cterm=none
+  highlight Conditional  ctermfg=68      cterm=none
+  highlight Repeat       ctermfg=68      cterm=none
+  highlight Keyword      ctermfg=68      cterm=none
+  highlight Operator     ctermfg=252     cterm=none
+
+  " Tipos — azul claro VS Code
+  highlight Type         ctermfg=74      cterm=none
+  highlight StorageClass ctermfg=68      cterm=none
+  highlight Structure    ctermfg=74      cterm=none
+
+  " Preprocessor
+  highlight PreProc      ctermfg=150     cterm=none
+  highlight Include      ctermfg=150     cterm=none
+  highlight Define       ctermfg=150     cterm=none
+
+  " Funções — amarelo VS Code
+  highlight Function     ctermfg=220     cterm=none
+  highlight Identifier   ctermfg=252     cterm=none
+  highlight Special      ctermfg=246     cterm=none
