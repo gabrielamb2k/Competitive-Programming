@@ -1,0 +1,4 @@
+mkdir -p ~/.vim/templates
+
+colar o template como cp.cpp
+colar o .vimrc em ~/.vimrc
