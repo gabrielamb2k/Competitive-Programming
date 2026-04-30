@@ -33,10 +33,10 @@ set nocompatible
 
     nnoremap <leader>t :term<CR>
     nnoremap <leader>i :vsp input.txt<CR>
-    nnoremap <leader>o :e output.txt<CR>
-    nnoremap <F9> :w<CR>:!g++ -std=c++17 -O2 -Wall -o %:r %<CR>
+    nnoremap <leader>o :vsp output.txt<CR>
     nnoremap <F5> :w<CR>:!g++ -std=c++17 -O2 -o %:r % && ./%:r<CR>
-    nnoremap <F6> :w<CR>:!g++ -std=c++17 -O2 -o %:r % && ./%:r < input.txt > output.txt 2>&1<CR>
+    nnoremap <F9> :w<CR>:!g++ -std=c++17 -O2 -Wall -o %:r % && ./%:r < input.txt<CR>
+    nnoremap <F6> :w<CR>:!g++ -std=c++17 -O2 -Wall -o %:r % && ./%:r < input.txt > output.txt 2>&1<CR>
     nnoremap <leader>cp :-1read ~/.vim/templates/cp.cpp<CR>
 
     autocmd FileType cpp setlocal commentstring=//\ %s
