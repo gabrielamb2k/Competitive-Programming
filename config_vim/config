@@ -2,9 +2,9 @@ set nocompatible
     filetype plugin indent on
     syntax on
 
-    set tabstop=2 shiftwidth=4 expandtab
+    set tabstop=2 shiftwidth=2 expandtab
     set smartindent autoindent
-
+    
     set number relativenumber
     set colorcolumn=0
     set laststatus=2 ruler showcmd
@@ -36,14 +36,16 @@ set nocompatible
     nnoremap <leader>o :e output.txt<CR>
     nnoremap <F9> :w<CR>:!g++ -std=c++17 -O2 -Wall -o %:r %<CR>
     nnoremap <F5> :w<CR>:!g++ -std=c++17 -O2 -o %:r % && ./%:r<CR>
-    nnoremap <F6> :w<CR>:!g++ -std=c++17 -O2 -o %:r % && ./%:r < input.txt<CR>
+    nnoremap <F6> :w<CR>:!g++ -std=c++17 -O2 -o %:r % && ./%:r < input.txt > output.txt 2>&1<CR>
     nnoremap <leader>cp :-1read ~/.vim/templates/cp.cpp<CR>
 
-    autocmd FileType cpp setlocal commentstring=//\ %s
     autocmd FileType cpp setlocal commentstring=//\ %s
     inoremap { {}<Left>
     inoremap [ []<Left>
     inoremap ( ()<Left>
+    inoremap ) <C-g>U<Right>
+    inoremap ] <C-g>U<Right>
+    inoremap } <C-g>U<Right>
 
     " Underline no normal mode, barra no insert mode
     let &t_EI = "\e[4 q"  " normal: underline
