@@ -43,9 +43,9 @@ set nocompatible
     inoremap { {}<Left>
     inoremap [ []<Left>
     inoremap ( ()<Left>
-    inoremap ) <C-g>U<Right>
-    inoremap ] <C-g>U<Right>
-    inoremap } <C-g>U<Right>
+    inoremap <expr> ) getline('.')[col('.')-1]==')' ? "\<Right>" : ")"
+    inoremap <expr> ] getline('.')[col('.')-1]==']' ? "\<Right>" : "]"
+    inoremap <expr> } getline('.')[col('.')-1]=='}' ? "\<Right>" : "}"
 
     " Underline no normal mode, barra no insert mode
     let &t_EI = "\e[4 q"  " normal: underline
