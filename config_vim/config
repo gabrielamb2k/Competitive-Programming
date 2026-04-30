@@ -40,6 +40,15 @@ set nocompatible
     nnoremap <leader>cp :-1read ~/.vim/templates/cp.cpp<CR>
 
     autocmd FileType cpp setlocal commentstring=//\ %s
+    autocmd FileType cpp setlocal commentstring=//\ %s
+    inoremap { {}<Left>
+    inoremap [ []<Left>
+    inoremap ( ()<Left>
+
+    " Underline no normal mode, barra no insert mode
+    let &t_EI = "\e[4 q"  " normal: underline
+    let &t_SI = "\e[6 q"  " insert: barra
+    let &t_SR = "\e[4 q"  " replace: underline
 
   " --- Formatador ---
   autocmd FileType cpp setlocal formatprg=clang-format\ --style=Google
