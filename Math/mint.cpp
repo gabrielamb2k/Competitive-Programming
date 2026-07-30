@@ -22,3 +22,22 @@ struct mint {
   mint operator/(const mint a) const {mint res(*this);return res/=a;}
 };
 ostream& operator<<(ostream& os, const mint& a) {os << a.x; return os;}
+
+// ou
+void add(int &a, int b) {
+    a += b; 
+    if (a >= mod) a -= MOD; 
+    if (a < 0) a += MOD; 
+} 
+int get_sum(int a, int b) {
+    add(a, b); 
+    return a; 
+} 
+
+int get_mult(int a, int b) {
+    return 1ll * a * b % MOD; 
+} 
+
+int get_inv(int n) {
+    return n <= 1 ? n : (MOD - get_mult(MOD/n, get_inv(MOD%n)))%MOD; 
+}
