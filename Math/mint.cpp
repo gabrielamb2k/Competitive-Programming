@@ -41,3 +41,7 @@ int get_mult(int a, int b) {
 int get_inv(int n) {
     return n <= 1 ? n : (MOD - get_mult(MOD/n, get_inv(MOD%n)))%MOD; 
 }
+
+int div(int a, int b){
+  return get_mult(a, get_inv(b));
+}
