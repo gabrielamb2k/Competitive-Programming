@@ -2,3 +2,22 @@ mkdir -p ~/.vim/templates
 
 colar o template como cp.cpp
 colar o .vimrc em ~/.vimrc
+
+comandos de execução:
+- Utilizar o terminal MSYS2 UCRT64 (Normal e Doludu) e MSYS2 CLANG64 (Sanitizers)
+- Substituir "cp" pelo nome do arquivo (sem .cpp)
+
+Normal:
+g++ cp.cpp -std=c++23 -Wall -Wextra -Wshadow -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -g -o cp.exe && ./cp.exe -debug
+
+Doludu:
+g++ cp.cpp -std=c++23 -Wall -Wextra -Wshadow -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -DDoludu -g -o cp.exe && ./cp.exe -debug
+
+Sanitizers (terminal CLANG64, usa clang++ e libc++):
+clang++ cp.cpp -std=c++23 -Wall -Wextra -Wshadow -DLOCAL -fsanitize=address,undefined -g -o cp.exe && ./cp.exe -debug
+
+Com arquivo de entrada (qualquer variante, acrescentar no final):
+./cp.exe -debug < in.txt
+
+Linux / WSL (g++ já traz os sanitizers):
+g++ cp.cpp -std=c++23 -Wall -Wextra -Wshadow -D_GLIBCXX_DEBUG -DLOCAL -fsanitize=address,undefined -g -o cp && ./cp -debug

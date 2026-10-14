@@ -1,124 +1,158 @@
 set nocompatible
-    filetype plugin indent on
-    syntax on
+filetype plugin indent on
+syntax on
 
-    set tabstop=2 shiftwidth=2 expandtab
-    set smartindent autoindent
-    
-    set number relativenumber
-    set colorcolumn=0
-    set laststatus=2 ruler showcmd
-    set scrolloff=5
+set tabstop=2 shiftwidth=2 expandtab
+set smartindent autoindent
 
-    set incsearch hlsearch ignorecase smartcase
+set number relativenumber
+set colorcolumn=0
+set laststatus=2 ruler showcmd
+set scrolloff=5
 
-    set clipboard=unnamedplus
-    set backspace=indent,eol,start
-    set wildmenu wildmode=longest:full,full
-    set mouse=a
-    set splitright splitbelow
-    set noswapfile
-    set encoding=utf-8
-    set hidden
+set incsearch hlsearch ignorecase smartcase
 
-    let mapleader = " "
+set clipboard=unnamedplus
+set backspace=indent,eol,start
+set wildmenu wildmode=longest:full,full
+set mouse=a
+set splitright splitbelow
+set noswapfile
+set encoding=utf-8
+set hidden
 
-    inoremap jk <Esc>
-    nnoremap <leader>w :w<CR>
-    nnoremap <leader>h :nohlsearch<CR>
-    nnoremap <C-h> <C-w>h
-    nnoremap <C-j> <C-w>j
-    nnoremap <C-k> <C-w>k
-    nnoremap <C-l> <C-w>l
+let mapleader = " "
 
-    nnoremap <leader>t :term<CR>
-    nnoremap <leader>i :vsp input.txt<CR>
-    nnoremap <leader>o :vsp output.txt<CR>
-    nnoremap <F5> :w<CR>:!g++ -std=c++17 -O2 -o %:r % && ./%:r<CR>
-    nnoremap <F9> :w<CR>:!g++ -std=c++17 -O2 -Wall -o %:r % && ./%:r < input.txt<CR>
-    nnoremap <F6> :w<CR>:!g++ -std=c++17 -O2 -Wall -o %:r % && ./%:r < input.txt > output.txt 2>&1<CR>
-    nnoremap <leader>cp :-1read ~/.vim/templates/cp.cpp<CR>
+inoremap jk <Esc>
+nnoremap <leader>w :w<CR>
+nnoremap <leader>h :nohlsearch<CR>
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
 
-    autocmd FileType cpp setlocal commentstring=//\ %s
-    inoremap { {}<Left>
-    inoremap [ []<Left>
-    inoremap ( ()<Left>
-    inoremap <expr> ) getline('.')[col('.')-1]==')' ? "\<Right>" : ")"
-    inoremap <expr> ] getline('.')[col('.')-1]==']' ? "\<Right>" : "]"
-    inoremap <expr> } getline('.')[col('.')-1]=='}' ? "\<Right>" : "}"
+nnoremap <leader>t :term<CR>
+nnoremap <leader>i :vsp input.txt<CR>
+nnoremap <leader>o :vsp output.txt<CR>
 
-    " Underline no normal mode, barra no insert mode
-    let &t_EI = "\e[4 q"  " normal: underline
-    let &t_SI = "\e[6 q"  " insert: barra
-    let &t_SR = "\e[4 q"  " replace: underline
+" --- Execuções (Normal / Doludu / Sanitizers) ---
+" Compilador do Sanitizers:
+"   Linux/WSL:      'g++'     (já traz libasan/libubsan)
+"   MSYS2 CLANG64:  'clang++' (o g++ do UCRT64 não tem sanitizers)
+let g:san_cxx = 'g++'
 
-  " --- Formatador ---
-  autocmd FileType cpp setlocal formatprg=clang-format\ --style=Google
-  nnoremap <leader>f :%!clang-format --style=Google<CR>
-  vnoremap <leader>f :!clang-format --style=Google<CR>
+let g:flags_normal = '-Wall -Wextra -Wshadow -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC'
+let g:flags_doludu = g:flags_normal . ' -DDoludu'
+" Com clang++/libc++, remova o -D_GLIBCXX_DEBUG daqui
+let g:flags_san    = '-Wall -Wextra -Wshadow -D_GLIBCXX_DEBUG -DLOCAL -fsanitize=address,undefined'
 
-  " --- Tema minimalista ---
-  set background=dark
-  set t_Co=256
+" cxx, flags, entrada ('' = interativo, 'input.txt' = redireciona), saída ('' ou 'output.txt')
+function! RunCpp(cxx, flags, infile, outfile)
+  write
+  let l:cmd = a:cxx . ' % -std=c++23 ' . a:flags . ' -g -o %:r && ./%:r -debug'
+  if a:infile !=# ''
+    let l:cmd .= ' < ' . a:infile
+  endif
+  if a:outfile !=# ''
+    let l:cmd .= ' > ' . a:outfile . ' 2>&1'
+  endif
+  execute '!' . l:cmd
+endfunction
 
-  highlight clear
-  highlight Normal       ctermbg=NONE    ctermfg=250
-  highlight Comment      ctermfg=240     cterm=italic
-  highlight LineNr       ctermfg=238
-  highlight CursorLineNr ctermfg=244     cterm=bold
-  highlight CursorLine   ctermbg=234     cterm=none
-  highlight ColorColumn  ctermbg=234
-  highlight StatusLine   ctermbg=234     ctermfg=242  cterm=none
-  highlight StatusLineNC ctermbg=233     ctermfg=238  cterm=none
-  highlight Visual       ctermbg=236
-  highlight Search       ctermbg=236     ctermfg=215  cterm=none
-  highlight IncSearch    ctermbg=215     ctermfg=234  cterm=none
-  highlight MatchParen   ctermbg=236     ctermfg=215  cterm=bold
+" Interativo (digita a entrada no terminal)
+nnoremap <F5> :call RunCpp('g++', g:flags_normal, '', '')<CR>
+nnoremap <F6> :call RunCpp('g++', g:flags_doludu, '', '')<CR>
+nnoremap <F7> :call RunCpp(g:san_cxx, g:flags_san, '', '')<CR>
 
-  " Sintaxe C++
-  highlight Statement    ctermfg=110     cterm=none
-  highlight Type         ctermfg=150     cterm=none
-  highlight String       ctermfg=180
-  highlight Number       ctermfg=173
-  highlight Constant     ctermfg=173
-  highlight PreProc      ctermfg=240
-  highlight Special      ctermfg=246
-  highlight Identifier   ctermfg=250     cterm=none
-  highlight Function     ctermfg=110     cterm=none
+" Lendo de input.txt
+nnoremap <leader>1 :call RunCpp('g++', g:flags_normal, 'input.txt', '')<CR>
+nnoremap <leader>2 :call RunCpp('g++', g:flags_doludu, 'input.txt', '')<CR>
+nnoremap <leader>3 :call RunCpp(g:san_cxx, g:flags_san, 'input.txt', '')<CR>
 
-  " Sem fundo nos números — mais limpo
-  highlight SignColumn   ctermbg=NONE
+" Normal: input.txt -> output.txt (sem mostrar na tela)
+nnoremap <F8> :call RunCpp('g++', g:flags_normal, 'input.txt', 'output.txt')<CR>
 
+nnoremap <leader>cp :-1read ~/.vim/templates/cp.cpp<CR>
 
-  highlight Comment      ctermfg=71      cterm=italic
+autocmd FileType cpp setlocal commentstring=//\ %s
+inoremap { {}<Left>
+inoremap [ []<Left>
+inoremap ( ()<Left>
+inoremap <expr> ) getline('.')[col('.')-1]==')' ? "\<Right>" : ")"
+inoremap <expr> ] getline('.')[col('.')-1]==']' ? "\<Right>" : "]"
+inoremap <expr> } getline('.')[col('.')-1]=='}' ? "\<Right>" : "}"
 
-  " Strings — laranja VS Code
-  highlight String       ctermfg=173
-  highlight Character    ctermfg=173
+" Underline no normal mode, barra no insert mode
+let &t_EI = "\e[4 q"  " normal: underline
+let &t_SI = "\e[6 q"  " insert: barra
+let &t_SR = "\e[4 q"  " replace: underline
 
-  " Números — verde claro
-  highlight Number       ctermfg=150     cterm=none
-  highlight Constant     ctermfg=150     cterm=none
-  highlight Boolean      ctermfg=86      cterm=none
+" --- Formatador ---
+autocmd FileType cpp setlocal formatprg=clang-format\ --style=Google
+nnoremap <leader>f :%!clang-format --style=Google<CR>
+vnoremap <leader>f :!clang-format --style=Google<CR>
 
-  " Keywords — azul VS Code
-  highlight Statement    ctermfg=68      cterm=none
-  highlight Conditional  ctermfg=68      cterm=none
-  highlight Repeat       ctermfg=68      cterm=none
-  highlight Keyword      ctermfg=68      cterm=none
-  highlight Operator     ctermfg=252     cterm=none
+" --- Tema minimalista ---
+set background=dark
+set t_Co=256
 
-  " Tipos — azul claro VS Code
-  highlight Type         ctermfg=74      cterm=none
-  highlight StorageClass ctermfg=68      cterm=none
-  highlight Structure    ctermfg=74      cterm=none
+highlight clear
+highlight Normal       ctermbg=NONE    ctermfg=250
+highlight Comment      ctermfg=240     cterm=italic
+highlight LineNr       ctermfg=238
+highlight CursorLineNr ctermfg=244     cterm=bold
+highlight CursorLine   ctermbg=234     cterm=none
+highlight ColorColumn  ctermbg=234
+highlight StatusLine   ctermbg=234     ctermfg=242  cterm=none
+highlight StatusLineNC ctermbg=233     ctermfg=238  cterm=none
+highlight Visual       ctermbg=236
+highlight Search       ctermbg=236     ctermfg=215  cterm=none
+highlight IncSearch    ctermbg=215     ctermfg=234  cterm=none
+highlight MatchParen   ctermbg=236     ctermfg=215  cterm=bold
 
-  " Preprocessor
-  highlight PreProc      ctermfg=150     cterm=none
-  highlight Include      ctermfg=150     cterm=none
-  highlight Define       ctermfg=150     cterm=none
+" Sintaxe C++
+highlight Statement    ctermfg=110     cterm=none
+highlight Type         ctermfg=150     cterm=none
+highlight String       ctermfg=180
+highlight Number       ctermfg=173
+highlight Constant     ctermfg=173
+highlight PreProc      ctermfg=240
+highlight Special      ctermfg=246
+highlight Identifier   ctermfg=250     cterm=none
+highlight Function     ctermfg=110     cterm=none
 
-  " Funções — amarelo VS Code
-  highlight Function     ctermfg=220     cterm=none
-  highlight Identifier   ctermfg=252     cterm=none
-  highlight Special      ctermfg=246     cterm=none
+" Sem fundo nos números — mais limpo
+highlight SignColumn   ctermbg=NONE
+
+highlight Comment      ctermfg=71      cterm=italic
+
+" Strings — laranja VS Code
+highlight String       ctermfg=173
+highlight Character    ctermfg=173
+
+" Números — verde claro
+highlight Number       ctermfg=150     cterm=none
+highlight Constant     ctermfg=150     cterm=none
+highlight Boolean      ctermfg=86      cterm=none
+
+" Keywords — azul VS Code
+highlight Statement    ctermfg=68      cterm=none
+highlight Conditional  ctermfg=68      cterm=none
+highlight Repeat       ctermfg=68      cterm=none
+highlight Keyword      ctermfg=68      cterm=none
+highlight Operator     ctermfg=252     cterm=none
+
+" Tipos — azul claro VS Code
+highlight Type         ctermfg=74      cterm=none
+highlight StorageClass ctermfg=68      cterm=none
+highlight Structure    ctermfg=74      cterm=none
+
+" Preprocessor
+highlight PreProc      ctermfg=150     cterm=none
+highlight Include      ctermfg=150     cterm=none
+highlight Define       ctermfg=150     cterm=none
+
+" Funções — amarelo VS Code
+highlight Function     ctermfg=220     cterm=none
+highlight Identifier   ctermfg=252     cterm=none
+highlight Special      ctermfg=246     cterm=none
