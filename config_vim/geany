@@ -1,0 +1,10 @@
+Compile: g++ -std=c++23 -Wshadow -Wall -O2 -Wno-unused-result -o "%e" "%f"
+Build: g++ -std=c++23 -Wshadow -Wall -Wextra -g -fsanitize=address,undefined -D_GLIBCXX_DEBUG -o "%e" "%f"
+doludu : g++ -std=c++23 -Wshadow -Wall -DDoludu -o "%e" "%f"
+
+
+Ir para o editor: F1
+Ir para o VTE: F2
+Compilar: F8
+build: F9
+Make all: F7
